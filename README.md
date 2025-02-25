@@ -1,50 +1,35 @@
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🏗️ Estructura del Proyecto  
 ```
+/src
+│── /app               # Configuración global de la app
+│    ├── layouts/      # Diseños reutilizables
+│    │    ├── AppLayout.tsx   # Layout principal de la app
+│    │    ├── AuthLayout.tsx  # Layout para login/registro
+│    ├── App.tsx       # Punto de entrada principal
+│    ├── AppRouter.tsx # Configuración de rutas con React Router
+│    ├── ProtectedRoute.tsx # Middleware para proteger rutas privadas
+│── /assets            # Recursos estáticos (imágenes, íconos, fuentes)
+│── /components        # Componentes reutilizables (botones, modales, inputs)
+│    ├── Button.tsx
+│── /features          # Módulos de la app organizados por funcionalidad
+│    │── /auth         # Módulo de autenticación
+│    │    ├── LoginPage.tsx
+│    │    ├── RegisterPage.tsx
+│    │    ├── ResetPasswordPage.tsx
+│    │── /settings     # Configuración de usuario
+│    │    ├── SettingsPage.tsx
+│    │── /upload       # Subida y procesamiento de documentos
+│    ├── DocumentViewerPage.tsx
+│    │    ├── UploadPage.tsx
+│── /hooks             # Hooks personalizados
+│    ├── useAuth.ts    # Hook para manejar autenticación
+│── /services          # Comunicación con el backend (API calls)
+│    ├── api.ts        # Función para hacer peticiones al backend
+│    ├── authService.ts # Funciones de autenticación (login, logout)
+│    ├── fileService.ts # Funciones para manejar archivos (subir, descargar)
+│── /types             # Definición de tipos y modelos
+│    ├── user.ts       # Tipos de usuario
+│── main.tsx           # Punto de entrada de la app
+│── index.css          # Estilos globales
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
 ```
