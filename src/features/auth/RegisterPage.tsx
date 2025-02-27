@@ -5,7 +5,7 @@ export function RegisterPage() {
 
   const handleRegisterClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate('/auth/register');
+    navigate('/auth/login');
   };
 
   return (
@@ -79,7 +79,11 @@ export function RegisterPage() {
             className="w-full p-2 mt-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
-        <button className="w-full p-2 mt-2 mb-4 font-semibold text-white bg-blue-900 rounded-lg hover:bg-blue-800">Registrarse</button>
+        <button 
+          className="w-full p-2 mt-2 mb-4 font-semibold text-white bg-blue-900 rounded-lg hover:bg-blue-800 transition-colors duration-300"
+        >
+          Registrarse
+        </button>
       </form>
 
       <div className="relative flex items-center justify-center my-4">
@@ -88,7 +92,7 @@ export function RegisterPage() {
       </div>
 
       <button
-        className="w-full mt-7 p-2 font-semibold text-gray-700 bg-gray-50 border-2 border-gray-200 rounded-lg hover:bg-gray-100 flex items-center justify-center">
+        className="w-full mt-7 p-2 font-semibold text-gray-700 bg-gray-50 border-2 border-gray-200 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors duration-300">
         <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5 mr-2" alt="Google logo" />
         Registrarme con Google
       </button>
