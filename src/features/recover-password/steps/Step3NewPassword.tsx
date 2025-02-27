@@ -36,7 +36,7 @@ export function Step3NewPassword({ onNext, onBack }: Step3Props) {
                         <input
                             type={showNewPassword ? 'text' : 'password'}
                             id="new-password"
-                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
+                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             placeholder="Ingresa tu nueva contraseña"
                         />
                         <button
@@ -64,7 +64,7 @@ export function Step3NewPassword({ onNext, onBack }: Step3Props) {
                         <input
                             type={showConfirmPassword ? 'text' : 'password'}
                             id="confirm-password"
-                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
+                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             placeholder="Confirma tu nueva contraseña"
                         />
                         <button
