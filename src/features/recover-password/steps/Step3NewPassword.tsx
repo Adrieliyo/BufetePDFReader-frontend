@@ -90,7 +90,7 @@ export function Step3NewPassword({ onNext, onBack }: Step3Props) {
 
                 <div className="flex absolute bottom-[1.5rem] right-0 mr-12 gap-4 justify-end pt-4">
                     <SecondaryButton onClick={onBack}>
-                        Volver
+                        Cancelar
                     </SecondaryButton>
                     <PrimaryButton onClick={onNext}>
                         Cambiar contraseña

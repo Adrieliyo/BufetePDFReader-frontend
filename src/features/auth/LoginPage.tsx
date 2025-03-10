@@ -35,7 +35,6 @@ export function LoginPage() {
         <div>
           <label className="flex justify-between text-sm font-medium text-gray-600" htmlFor="password">
             Contraseña
-            {/* <a href="#" className="text-blue-500 hover:underline">Forgot your password?</a> */}
           </label>
           <input
             id="password"
