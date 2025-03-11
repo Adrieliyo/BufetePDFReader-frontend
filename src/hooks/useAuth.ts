@@ -7,9 +7,12 @@ import { login } from "../services/authService";
 export function useAuth() {
   const [user, setUser] = useState(null);
 
-  async function handleLogin(email: string, password: string) {
-    const data = await login(email, password);
-    setUser(data.user);
+  async function handleLogin(email_or_username: string, password: string) {
+    console.log('useAuth.handleLogin called with:', email_or_username);
+    const data = await login(email_or_username, password);
+    console.log('useAuth.handleLogin response:', data);
+    setUser(data);
+    return data; // Devolver los datos para que puedas usarlos en el componente
   }
 
   return { user, handleLogin };

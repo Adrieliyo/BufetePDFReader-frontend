@@ -6,6 +6,9 @@ import { fetchData } from "./api";
 export async function login(email_or_username: string, password: string) {
   return fetchData("auth/login", {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({ email_or_username, password }),
   });
 }

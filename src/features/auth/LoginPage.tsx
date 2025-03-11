@@ -1,7 +1,17 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { user, handleLogin } = useAuth();
+  const [credentials, setCredentials] = useState({
+    emailOrUsername: '',
+    password: '',
+    remember: false
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleRegisterClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -13,6 +23,46 @@ export function LoginPage() {
     navigate('/recover-password');
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setCredentials({
+      ...credentials,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    console.log('Iniciando login con:', credentials);
+    
+    try {
+      // Llamar a handleLogin para autenticar con la lógica modificada
+      const userData = await handleLogin(credentials.emailOrUsername, credentials.password);
+      console.log('Login exitoso, respuesta:', userData);
+      
+      // Guardar token en localStorage (para redundancia con la cookie)
+      localStorage.setItem('token', 'authenticated');
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Verificar todas las cookies después del login
+      console.log('Cookies después del login:', document.cookie);
+      
+      // Retraso corto para asegurar que localStorage se actualice
+      setTimeout(() => {
+        console.log('Redirigiendo a /upload');
+        navigate('/upload');
+      }, 100);
+      
+    } catch (err) {
+      console.error('Error durante login:', err);
+      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <div>
@@ -21,14 +71,18 @@ export function LoginPage() {
       />
       <h2 className="text-4xl font-bold mb-6">Iniciar sesión</h2>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm font-medium text-gray-600" htmlFor="emailOrUsername">Correo electrónico o nombre de usuario</label>
           <input
             id="emailOrUsername"
+            name="emailOrUsername"
             type="text"
             placeholder="correo@ejemplo.com o username"
             className="w-full p-2 mt-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-blue-500 focus:ring-blue-500"
+            value={credentials.emailOrUsername}
+            onChange={handleInputChange}
+            required
           />
         </div>
 
@@ -38,16 +92,23 @@ export function LoginPage() {
           </label>
           <input
             id="password"
+            name="password"
             type="password"
             placeholder="••••••"
             className="w-full p-2 mt-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-blue-500 focus:ring-blue-500"
+            value={credentials.password}
+            onChange={handleInputChange}
+            required
           />
         </div>
 
         <div className="flex items-center justify-between">
 
           <div className="flex items-center">
-            <input id="remember" type="checkbox" className="w-4 h-4 mr-2" />
+            <input id="remember" name="remember" type="checkbox" className="w-4 h-4 mr-2 accent-blue-900" 
+              checked={credentials.remember}
+              onChange={handleInputChange}
+            />
             <label className="text-sm" htmlFor="remember">Recuérdame</label>
           </div>
 
@@ -56,10 +117,14 @@ export function LoginPage() {
 
         </div>
 
-        <button 
+        {error && <div className="p-3 mb-4 text-sm text-white bg-red-500 rounded-md">{error}</div>}
+
+        <button
+          type="submit"
           className="w-full p-2 mt-2 font-semibold text-white bg-blue-900 rounded-lg hover:bg-blue-800 transition-colors duration-300"
+          disabled={isLoading}
         >
-          Iniciar sesión
+          {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
         </button>
       </form>
 
@@ -71,8 +136,6 @@ export function LoginPage() {
           Registrarme
         </a>
       </p>
-
-
 
       <div className="relative flex items-center justify-center my-4">
         <span className="absolute px-4 bg-white text-sm">o</span>
