@@ -2,8 +2,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { AppLayout } from "./layouts/AppLayout";
 import ProtectedRoute from "./ProtectedRoute";
+
 import { LoginPage } from "../features/auth/LoginPage";
 import { RegisterPage } from "../features/auth/RegisterPage";
+import { VerifyUserPage } from "../features/auth/VerifyUserPage";
 
 import { RecoverPasswordLayout } from "./layouts/RecoverPasswordLayout";
 import { RecoverPasswordPage } from "../features/recover-password/RecoverPasswordPage";
@@ -24,6 +26,9 @@ import { SettingsPage } from "../features/settings/SettingsPage";
         path: "/recover-password", element: <RecoverPasswordLayout/>, children: [
             { path: "", element: <RecoverPasswordPage/> }
         ]
+    },
+    {
+        path: "/verify-user", element: <VerifyUserPage/>
     },
     {
         path: "/", element: <ProtectedRoute/>, children: [

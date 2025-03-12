@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { AlertModal } from '../../components/AlertModal';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -12,6 +13,14 @@ export function LoginPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Estado para controlar el modal
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'success' as 'success' | 'error' | 'warning' | 'info'
+  });
 
   const handleRegisterClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -31,41 +40,78 @@ export function LoginPage() {
     });
   };
 
+  const handleGoogleLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // Mostrar el modal informativo
+    setAlertModal({
+      isOpen: true,
+      title: 'Función en desarrollo',
+      message: 'Esta función está en desarrollo, favor de iniciar sesión de forma convencional.',
+      type: 'info'
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     console.log('Iniciando login con:', credentials);
-    
+
     try {
       // Llamar a handleLogin para autenticar con la lógica modificada
       const userData = await handleLogin(credentials.emailOrUsername, credentials.password);
       console.log('Login exitoso, respuesta:', userData);
-      
+
       // Guardar token en localStorage (para redundancia con la cookie)
       localStorage.setItem('token', 'authenticated');
       localStorage.setItem('user', JSON.stringify(userData));
-      
+
       // Verificar todas las cookies después del login
       console.log('Cookies después del login:', document.cookie);
-      
+
+      // Mostrar mensaje de éxito
+      setAlertModal({
+        isOpen: true,
+        title: '¡Inicio de sesión exitoso!',
+        message: 'Serás redirigido en breve...',
+        type: 'success'
+      });
+
       // Retraso corto para asegurar que localStorage se actualice
       setTimeout(() => {
         console.log('Redirigiendo a /upload');
         navigate('/upload');
-      }, 100);
-      
+      }, 1500);
+
     } catch (err) {
       console.error('Error durante login:', err);
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
+      // Mostrar mensaje de error genérico en lugar del mensaje técnico
+      setError('Error al iniciar sesión');
+
+      // Para depuración, seguimos mostrando el error real en la consola
+      console.error('Detalles del error:', err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }
   };
 
+  const closeModal = () => {
+    setAlertModal(prev => ({ ...prev, isOpen: false }));
+  };
+
 
   return (
     <div>
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={closeModal}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        autoClose={alertModal.type === 'success' ? 1500 : undefined}
+      />
+
       <img src="../../src/assets/BufetePDFReaderFullLogo.png" alt="BufetePDFReaderLogo"
         className="h-16 w-auto mb-3"
       />
@@ -105,7 +151,7 @@ export function LoginPage() {
         <div className="flex items-center justify-between">
 
           <div className="flex items-center">
-            <input id="remember" name="remember" type="checkbox" className="w-4 h-4 mr-2 accent-blue-900" 
+            <input id="remember" name="remember" type="checkbox" className="w-4 h-4 mr-2 accent-blue-900"
               checked={credentials.remember}
               onChange={handleInputChange}
             />
@@ -117,7 +163,22 @@ export function LoginPage() {
 
         </div>
 
-        {error && <div className="p-3 mb-4 text-sm text-white bg-red-500 rounded-md">{error}</div>}
+        {/* {error && <div className="p-3 mb-4 text-sm text-white bg-red-500 rounded-md">{error}</div>} */}
+
+        {error && (
+          <div 
+            className="p-3 mb-2 text-sm font-medium text-white bg-red-500 rounded-lg border animate-fade-in flex items-center"
+            style={{
+              backgroundColor: 'rgba(239, 68, 68, 1)',
+              backdropFilter: 'blur(4px)'
+            }}
+          >
+            <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{error}</span>
+          </div>
+        )}
 
         <button
           type="submit"
@@ -143,6 +204,7 @@ export function LoginPage() {
       </div>
 
       <button
+        onClick={handleGoogleLogin}
         className="w-full mt-7 p-2 font-semibold text-gray-700 bg-gray-50 border-2 border-gray-200 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors duration-300">
         <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5 mr-2" alt="Google logo" />
         Iniciar sesión con Google
