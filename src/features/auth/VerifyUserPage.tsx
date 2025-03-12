@@ -12,7 +12,7 @@ export function VerifyUserPage() {
         // Por ejemplo:
         const queryParams = new URLSearchParams(location.search);
         const token = queryParams.get('token');
-        
+
         if (token) {
             verifyUserEmail(token);
         } else {
@@ -25,7 +25,7 @@ export function VerifyUserPage() {
             // Aquí iría la llamada a tu API para verificar el email
             // const response = await fetch(`http://localhost:8000/auth/verify?token=${token}`);
             // if (!response.ok) throw new Error('Error al verificar email');
-            
+
             // Por ahora, simulamos la verificación exitosa
 
             await verifyUser(token);
@@ -46,10 +46,10 @@ export function VerifyUserPage() {
                 {/* Columna de la imagen */}
                 <div className="absolute top-6 left-6">
                     {/* Imagen arriba del título */}
-                    <img 
-                        src="../../src/assets/BufetePDFReaderFullLogo.png" 
-                        alt="BufetePDF logo" 
-                        className="h-24 w-auto mb-[1em]" 
+                    <img
+                        src="../../src/assets/BufetePDFReaderFullLogo.png"
+                        alt="BufetePDF logo"
+                        className="h-24 w-auto mb-[1em]"
                     />
                 </div>
 
@@ -74,19 +74,19 @@ export function VerifyUserPage() {
                                 </p>
                                 <div>
                                     <p className="text-gray-600 text-lg mb-3 w-[16rem]">
-                                        No se pudo verificar tu cuenta. Por favor, intenta de nuevo
+                                        El usuario ya ha sido verificado o el enlace ha expirado.
                                     </p>
                                 </div>
                             </>
                         )}
 
                         <div className="flex gap-4 pt-2">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={goBackToLog}
                                 className={`px-4 py-[0.5rem] w-[16rem] text-white text-2xl font-medium 
-                                    ${verificationError 
-                                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
+                                    ${verificationError
+                                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
                                         : 'bg-blue-900 hover:bg-blue-800 focus:ring-blue-500'
                                     } rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2`}
                             >
