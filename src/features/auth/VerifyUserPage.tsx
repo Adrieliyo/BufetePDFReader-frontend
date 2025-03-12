@@ -1,38 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { verifyUser } from '../../services/verifyService';
 
 export function VerifyUserPage() {
     const [verificationError, setVerificationError] = useState(false);
+    const [verificationMessage, setVerificationMessage] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
+    const verificationAttempted = useRef(false);
 
     useEffect(() => {
-        // Aquí puedes implementar la lógica para verificar el token desde la URL
-        // Por ejemplo:
+        // Solo ejecutar la verificación una vez
+        if (verificationAttempted.current) return;
+        
         const queryParams = new URLSearchParams(location.search);
         const token = queryParams.get('token');
 
         if (token) {
+            verificationAttempted.current = true;
             verifyUserEmail(token);
         } else {
             setVerificationError(true);
+            setVerificationMessage("No se proporcionó token de verificación");
         }
     }, [location]);
 
     const verifyUserEmail = async (token: string) => {
         try {
-            // Aquí iría la llamada a tu API para verificar el email
-            // const response = await fetch(`http://localhost:8000/auth/verify?token=${token}`);
-            // if (!response.ok) throw new Error('Error al verificar email');
-
-            // Por ahora, simulamos la verificación exitosa
-
-            await verifyUser(token);
+            const response = await verifyUser(token);
             setVerificationError(false);
+            setVerificationMessage(response.message || "Verificación exitosa");
         } catch (error) {
             console.error('Error verificando email:', error);
             setVerificationError(true);
+            // Capturar el mensaje de error de la API
+            if (error instanceof Error) {
+                setVerificationMessage(error.message || "Error al verificar el email");
+            } else {
+                setVerificationMessage("Error desconocido al verificar el email");
+            }
         }
     };
 
@@ -74,7 +80,7 @@ export function VerifyUserPage() {
                                 </p>
                                 <div>
                                     <p className="text-gray-600 text-lg mb-3 w-[16rem]">
-                                        El usuario ya ha sido verificado o el enlace ha expirado.
+                                        {verificationMessage || "El usuario ya ha sido verificado o el enlace ha expirado."}
                                     </p>
                                 </div>
                             </>
