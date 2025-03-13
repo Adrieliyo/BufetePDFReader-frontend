@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { LoginPage } from "../features/auth/LoginPage";
 import { RegisterPage } from "../features/auth/RegisterPage";
 import { VerifyUserPage } from "../features/auth/VerifyUserPage";
+import { HomePage } from "../features/home/HomePage";
 
 import { RecoverPasswordLayout } from "./layouts/RecoverPasswordLayout";
 import { RecoverPasswordPage } from "../features/recover-password/RecoverPasswordPage";
@@ -34,6 +35,7 @@ import { SettingsPage } from "../features/settings/SettingsPage";
         path: "/", element: <ProtectedRoute/>, children: [
             {
                 path: "", element: <AppLayout/>, children: [
+                    {path: "home", element: <HomePage/>},
                     { path: "upload", element: <UploadPage/> },
                     { path: "viewer", element: <DocumentViewerPage/>},
                     { path: "settings", element: <SettingsPage/>}

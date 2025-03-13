@@ -5,13 +5,13 @@ export function Header() {
     const location = useLocation();
 
     // Determinar si estamos en la página de upload
-    const isHomePage = location.pathname === '/';
-    const isUploadPage = location.pathname === '/upload';
+    const isHomePage = location.pathname === '/home';
+    const isUploadPage = location.pathname === '/upload' || location.pathname === '/viewer';
 
 
     const onNavigateHome = (e: React.MouseEvent) => {
         e.preventDefault();
-        navigate('/');
+        navigate('/home');
     };
 
     const onNavigateUpload = (e: React.MouseEvent) => {
