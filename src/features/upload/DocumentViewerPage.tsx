@@ -4,17 +4,52 @@ import { Breadcrumb } from '../../components/Breadcrumb';
 
 export function DocumentViewerPage() {
     const [fileName, setFileName] = useState<string>('');
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     
-    // Cargar el nombre del archivo desde localStorage
+    // Cargar el nombre del archivo desde localStorage y obtener el archivo
     useEffect(() => {
+        setLoading(true);
+        
+        // Obtener el nombre del archivo
         const lastFileName = localStorage.getItem('lastUploadedFile');
-        if (lastFileName) {
+        
+        // Obtener el archivo en base64 (si existe)
+        const pdfFile = localStorage.getItem('pdfFileData');
+        
+        if (lastFileName && pdfFile) {
             setFileName(lastFileName);
+            
+            // Crear un blob a partir de los datos base64
+            try {
+                const byteCharacters = atob(pdfFile.split(',')[1]);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+                
+                // Crear un objeto URL para el blob
+                const url = URL.createObjectURL(blob);
+                setPdfUrl(url);
+            } catch (error) {
+                console.error('Error al procesar el PDF:', error);
+            } finally {
+                setLoading(false);
+            }
         } else {
             // Si no hay archivo seleccionado, redirigir a la página de subida
             navigate('/upload');
         }
+        
+        // Limpiar el objeto URL cuando el componente se desmonte
+        return () => {
+            if (pdfUrl) {
+                URL.revokeObjectURL(pdfUrl);
+            }
+        };
     }, [navigate]);
     
     // Define los SVGs que usarás como iconos
@@ -59,6 +94,13 @@ export function DocumentViewerPage() {
         navigate('/upload');
     };
 
+    // Opción para procesar el documento
+    const handleProcessDocument = () => {
+        // Aquí puedes agregar la lógica para procesar el documento
+        alert('Procesando documento...');
+        // navigate('/results'); // Ejemplo: navegar a una pantalla de resultados
+    };
+
     return (
         <div className="p-6">
             {/* Breadcrumb */}
@@ -84,45 +126,63 @@ export function DocumentViewerPage() {
                 </div>
                 
                 <div className="bg-white p-6 rounded-lg border border-gray-300">
-                    <h2 className="text-xl font-semibold mb-4">
+                    <h2 className="text-xl font-semibold mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className="w-5 h-5 mr-2 text-red-600 fill-current">
+                            <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
+                        </svg>
                         {fileName || "Documento PDF"}
                     </h2>
                     
                     <div className="border-2 border-gray-200 rounded-lg min-h-[600px] flex flex-col">
                         {/* Barra de herramientas del visor */}
                         <div className="bg-gray-50 p-3 border-b border-gray-200 flex items-center">
-                            <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-md mr-2">
+                            <button 
+                                className="p-2 text-gray-600 hover:bg-gray-200 rounded-md mr-2"
+                                onClick={handleUploadNew}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className="w-5 h-5 fill-current">
-                                    <path d="M200-120v-640h167l73 80h320v160h-80v-80H480l-73-80H280v480h400v-240h80v320H200Zm240-160q-33 0-56.5-23.5T360-360q0-33 23.5-56.5T440-440q33 0 56.5 23.5T520-360q0 33-23.5 56.5T440-280Zm200-280v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/>
+                                    <path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
                                 </svg>
                             </button>
-                            <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-md mr-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className="w-5 h-5 fill-current">
-                                    <path d="M240-160q-33 0-56.5-23.5T160-240v-480q0-33 23.5-56.5T240-800h320l240 240v320q0 33-23.5 56.5T720-160H240Zm280-520v-120H240v480h480v-360H520ZM240-800v200-200 480-480Z"/>
-                                </svg>
-                            </button>
+                            <span className="text-sm text-gray-500">
+                                Archivo: {fileName}
+                            </span>
                             <div className="flex-grow"></div>
-                            <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                            {/* <button 
+                                className="p-2 text-gray-600 hover:bg-gray-200 rounded-md"
+                                onClick={handleProcessDocument}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" className="w-5 h-5 fill-current">
-                                    <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Zm-40 120v-240h80v240h-80Z"/>
+                                    <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
                                 </svg>
-                            </button>
+                            </button> */}
                         </div>
                         
                         {/* Área del visor de PDF */}
-                        <div className="flex-grow flex items-center justify-center">
-                            <div className="text-center p-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" 
-                                    className="w-16 h-16 mx-auto mb-4 text-gray-400 fill-current">
-                                    <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
-                                </svg>
-                                <p className="text-gray-600 mb-3">
-                                    Archivo seleccionado: <strong>{fileName}</strong>
-                                </p>
-                                <p className="text-gray-500 text-sm">
-                                    Visor de PDF en construcción. Aquí se mostraría el contenido del documento.
-                                </p>
-                            </div>
+                        <div className="flex-grow flex items-center justify-center bg-gray-100">
+                            {loading ? (
+                                <div className="flex flex-col items-center justify-center p-4">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-900"></div>
+                                    <p className="mt-4 text-gray-600">Cargando documento...</p>
+                                </div>
+                            ) : pdfUrl ? (
+                                <iframe
+                                    src={pdfUrl}
+                                    className="w-full h-full"
+                                    title="PDF Viewer"
+                                    style={{ minHeight: '600px' }}
+                                ></iframe>
+                            ) : (
+                                <div className="text-center p-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" 
+                                        className="w-16 h-16 mx-auto mb-4 text-gray-400 fill-current">
+                                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Zm0 160q33 0 56.5-23.5T560-400q0-33-23.5-56.5T480-480q-33 0-56.5 23.5T400-400q0 33 23.5 56.5T480-320Zm-160-80h80v-240h-80v240Zm240 0h80v-240h-80v240Z" />
+                                    </svg>
+                                    <p className="text-gray-600 mb-3">
+                                        No se pudo cargar el documento
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                     
@@ -134,7 +194,10 @@ export function DocumentViewerPage() {
                         >
                             Volver a subida
                         </button>
-                        <button className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800">
+                        <button 
+                            onClick={handleProcessDocument}
+                            className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800"
+                        >
                             Procesar documento
                         </button>
                     </div>

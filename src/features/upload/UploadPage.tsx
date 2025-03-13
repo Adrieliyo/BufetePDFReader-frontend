@@ -92,12 +92,33 @@ export function UploadPage() {
 
     const processFile = (file: File) => {
         setSelectedFile(file);
-
+    
         // Guardar el nombre del archivo en localStorage
         localStorage.setItem('lastUploadedFile', file.name);
-
-        // Navegar directamente al visor de documentos
-        navigate('/viewer');
+    
+        // Guardar el contenido del archivo como base64 en localStorage
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            if (event.target && event.target.result) {
+                // Guardar el archivo en base64
+                localStorage.setItem('pdfFileData', event.target.result.toString());
+                
+                // Navegar al visor de documentos
+                navigate('/viewer');
+            }
+        };
+        reader.onerror = (error) => {
+            console.error('Error al leer el archivo:', error);
+            setAlertModal({
+                isOpen: true,
+                title: 'Error de lectura',
+                message: 'No se pudo leer el archivo PDF.',
+                type: 'error'
+            });
+        };
+        
+        // Leer el archivo como una URL de datos (data URL)
+        reader.readAsDataURL(file);
     };
 
     // Manejadores de eventos para drag and drop
