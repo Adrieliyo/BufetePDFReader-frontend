@@ -2,6 +2,8 @@ interface PrimaryButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
+  type: string;
 }
 
 export function PrimaryButton({ onClick, children, className = "" }: PrimaryButtonProps) {
