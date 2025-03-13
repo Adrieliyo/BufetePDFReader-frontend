@@ -69,7 +69,7 @@ export function DocumentViewerPage() {
 
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-3xl font-bold text-gray-800">
+                    <h1 className="text-3xl font-medium text-gray-800">
                         Visor de Documentos
                     </h1>
                     <button 
@@ -83,7 +83,7 @@ export function DocumentViewerPage() {
                     </button>
                 </div>
                 
-                <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-xl font-semibold mb-4">
                         {fileName || "Documento PDF"}
                     </h2>

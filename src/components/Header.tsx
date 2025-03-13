@@ -35,7 +35,7 @@ export function Header() {
                 <nav className="flex items-center space-x-6 ml-10">
                     <button
                         onClick={onNavigateHome}
-                        className={`flex items-end gap-2 transition-all duration-500 ease-in-out text-lg font-medium pl-4 px-5 py-3 rounded-md
+                        className={`flex items-end gap-2 transition-all duration-500 ease-in-out text-lg font-medium pl-4 px-5 py-3 rounded-2xl
                             ${isHomePage
                                 ? 'bg-blue-900 text-white hover:bg-blue-800'
                                 : 'bg-transparent text-gray-600 hover:text-gray-900'
@@ -52,7 +52,7 @@ export function Header() {
 
                     <button
                         onClick={onNavigateUpload}
-                        className={`flex items-center gap-2 transition-all duration-500 ease-in-out text-lg font-medium pl-2 px-4 py-2 rounded-md
+                        className={`flex items-center gap-2 transition-all duration-500 ease-in-out text-lg font-medium pl-2 px-4 py-2 rounded-2xl
                         ${isUploadPage
                             ? 'bg-blue-900 text-white hover:bg-blue-800'
                             : 'bg-transparent text-gray-600 hover:text-gray-900'
@@ -63,7 +63,7 @@ export function Header() {
                             <path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
                         </svg>
 
-                        <span>Subida de archivos</span>
+                        <span>Subida de archivo</span>
                     </button>
                 </nav>
 
