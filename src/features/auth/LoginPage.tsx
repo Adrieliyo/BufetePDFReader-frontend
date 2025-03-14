@@ -80,8 +80,8 @@ export function LoginPage() {
 
       // Retraso corto para asegurar que localStorage se actualice
       setTimeout(() => {
-        console.log('Redirigiendo a /upload');
-        navigate('/upload');
+        console.log('Redirigiendo a /home');
+        navigate('/home');
       }, 1500);
 
     } catch (err) {

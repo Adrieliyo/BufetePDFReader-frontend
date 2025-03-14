@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { AppLayout } from "./layouts/AppLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -35,6 +35,7 @@ import { SettingsPage } from "../features/settings/SettingsPage";
         path: "/", element: <ProtectedRoute/>, children: [
             {
                 path: "", element: <AppLayout/>, children: [
+                    { index: true, element: <Navigate to="/home" replace /> },
                     {path: "home", element: <HomePage/>},
                     { path: "upload", element: <UploadPage/> },
                     { path: "viewer", element: <DocumentViewerPage/>},
