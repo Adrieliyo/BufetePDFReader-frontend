@@ -1,11 +1,20 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import { AlertModal } from './AlertModal';
 
 export function Header() {
     const navigate = useNavigate();
     const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Estado para el modal de alerta
+    const [alertModal, setAlertModal] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'info' as 'success' | 'error' | 'warning' | 'info'
+    });
 
     // Recuperar datos del usuario (si están disponibles)
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -37,7 +46,14 @@ export function Header() {
 
     const onNavigateAccount = (e: React.MouseEvent) => {
         e.preventDefault();
-        navigate('/settings');
+        // En lugar de navegar, mostramos el modal informativo
+        setAlertModal({
+            isOpen: true,
+            title: 'Función en desarrollo',
+            message: 'Esta opción se encuentra en desarrollo, favor de intentar después.',
+            type: 'info'
+        });
+        // Cerrar el dropdown
         setIsDropdownOpen(false);
     };
 
@@ -72,6 +88,11 @@ export function Header() {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    // Función para cerrar el modal
+    const closeAlertModal = () => {
+        setAlertModal({...alertModal, isOpen: false});
+    };
+
     // Cerrar el dropdown cuando se hace clic fuera de él
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -88,6 +109,16 @@ export function Header() {
     
     return (
         <header className="flex items-center justify-between p-2 bg-white shadow-sm">
+            {/* AlertModal para funciones en desarrollo */}
+            <AlertModal
+                isOpen={alertModal.isOpen}
+                onClose={closeAlertModal}
+                title={alertModal.title}
+                message={alertModal.message}
+                type={alertModal.type}
+                autoClose={3000} // Cerrar automáticamente después de 3 segundos
+            />
+            
             <div className="flex items-center mx-7">
                 {/* Logo and Brand */}
                 <div className="flex items-center">
